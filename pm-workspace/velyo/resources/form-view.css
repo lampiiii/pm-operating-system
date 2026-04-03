@@ -1,0 +1,196 @@
+/**
+ * PM OS — Shared Form View
+ * Consistent record detail layout across all dashboards.
+ * Include via: <link rel="stylesheet" href="/resources/form-view.css">
+ */
+
+/* ─── Form View Modal Override ─── */
+.modal-form-view .modal {
+  width: 1056px;
+  max-width: 94vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-light, var(--border));
+}
+.modal-form-view .modal-body {
+  overflow-y: auto;
+  flex: 1;
+  padding: 8px 32px 24px;
+}
+.modal-form-view .modal-header {
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid var(--border-light, var(--border));
+}
+.modal-form-view .modal-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.modal-form-view .modal-footer {
+  padding: 16px 32px 24px;
+  border-top: 1px solid var(--border-light, var(--border));
+}
+
+/* ─── Form Rows ─── */
+.fv-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-light, var(--border));
+  align-items: start;
+}
+.fv-row:last-child { border-bottom: none; }
+
+.fv-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  padding-top: 9px;
+  user-select: none;
+}
+
+.fv-field {
+  min-width: 0;
+}
+
+/* ─── Field Inputs ─── */
+.fv-field .form-input,
+.fv-field .form-select {
+  width: 100%;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface-dim, var(--surface));
+  color: var(--text);
+  font-size: 14px;
+  border-radius: 8px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.fv-field .form-input:focus,
+.fv-field .form-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-bg, rgba(108,92,231,0.08));
+}
+.fv-field .form-input::placeholder { color: var(--text-faint, var(--text-muted)); }
+.fv-field .form-select {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%2380868b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+}
+
+/* ─── Textarea (Notes / Description) ─── */
+.fv-field .fv-textarea {
+  width: 100%;
+  min-height: 200px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  background: var(--surface-dim, var(--surface));
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.65;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.fv-field .fv-textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-bg, rgba(108,92,231,0.08));
+}
+.fv-field .fv-textarea::placeholder { color: var(--text-faint, var(--text-muted)); }
+
+/* ─── Hints ─── */
+.fv-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* ─── Inline pair (two fields side by side) ─── */
+.fv-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.fv-pair-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Read-only display ─── */
+.fv-readonly {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.6;
+  padding: 9px 0;
+}
+.fv-readonly-empty {
+  color: var(--text-faint, var(--text-muted));
+  font-style: italic;
+}
+
+/* ─── Badge inside form ─── */
+.fv-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 6px;
+}
+
+/* ─── Editable Title (double-click to edit) ─── */
+.modal-title[data-editable] {
+  cursor: default;
+}
+.modal-title[data-editable]:hover {
+  background: var(--surface-dim, rgba(0,0,0,0.04));
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin: -2px -8px;
+}
+.modal-title-input {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.2px;
+  border: 1px solid var(--blue);
+  background: var(--surface-dim, var(--surface));
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin: -2px -8px;
+  outline: none;
+  box-shadow: 0 0 0 3px var(--blue-bg, rgba(108,92,231,0.08));
+  font-family: inherit;
+  width: 100%;
+  min-width: 0;
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 640px) {
+  .fv-row {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    padding: 14px 0;
+  }
+  .fv-label { padding-top: 0; }
+  .modal-form-view .modal { width: 96vw; }
+  .modal-form-view .modal-body { padding: 8px 16px 16px; }
+  .modal-form-view .modal-header { padding: 16px 16px 12px; }
+  .modal-form-view .modal-footer { padding: 12px 16px 16px; }
+}

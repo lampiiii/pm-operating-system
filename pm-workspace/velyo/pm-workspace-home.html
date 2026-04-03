@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PM OS — PM Workspace</title>
+  <meta name="description" content="PM OS — AI-powered PM workspace. Your daily command center.">
+  <!-- Replace with your own favicon: <link rel="icon" href="/resources/favicon.png" type="image/png"> -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Text:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ─── CSS Variables — Google I/O 2026 Theme ─── */
+    :root {
+      --blue: #89b4fa;
+      --blue-hover: #a6c8ff;
+      --blue-bg: rgba(137,180,250,0.12);
+      --g-blue: #4285f4;
+      --g-red: #ea4335;
+      --g-yellow: #fbbc04;
+      --g-green: #34a853;
+      --g-cyan: #24c1e0;
+      --g-coral: #ff6d6a;
+      --text: #e8eaed;
+      --text-secondary: #9aa0a6;
+      --text-muted: #5f6368;
+      --text-faint: #3c4043;
+      --surface: #1a1a2e;
+      --surface-dim: #131325;
+      --surface-hover: #232340;
+      --border: #2d2d4a;
+      --border-light: #252542;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+      --card-bg: rgba(255,255,255,0.04);
+      --card-border: rgba(255,255,255,0.08);
+    }
+    [data-theme="light"] {
+      --blue: #1a73e8;
+      --blue-hover: #185abc;
+      --blue-bg: rgba(26,115,232,0.08);
+      --g-blue: #1a73e8;
+      --g-red: #d93025;
+      --g-yellow: #f9ab00;
+      --g-green: #1e8e3e;
+      --g-cyan: #12a4af;
+      --g-coral: #e8453c;
+      --text: #202124;
+      --text-secondary: #5f6368;
+      --text-muted: #9aa0a6;
+      --text-faint: #dadce0;
+      --surface: #ffffff;
+      --surface-dim: #f8f9fa;
+      --surface-hover: #f1f3f4;
+      --border: #dadce0;
+      --border-light: #e8eaed;
+      --shadow-sm: 0 1px 2px rgba(60,64,67,0.3), 0 1px 3px rgba(60,64,67,0.15);
+      --shadow-md: 0 1px 2px rgba(60,64,67,0.3), 0 2px 6px 2px rgba(60,64,67,0.15);
+      --card-bg: #ffffff;
+      --card-border: #dadce0;
+    }
+
+    body {
+      font-family: 'Google Sans', 'Google Sans Text', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #131325;
+      color: #e8eaed;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    ::selection { background: rgba(66,133,244,0.4); color: #fff; }
+
+    /* ─── Light Mode ─── */
+    [data-theme="light"] body,
+    [data-theme="light"] { color: #202124; }
+    [data-theme="light"] body { background: #ffffff; }
+    [data-theme="light"] .hero { background: var(--hero-bg-light, #ffffff); }
+    [data-theme="light"] .hero::before { background: radial-gradient(ellipse, rgba(26,115,232,0.12) 0%, rgba(30,142,62,0.05) 40%, transparent 70%); filter: blur(50px); }
+    [data-theme="light"] .hero::after { background: radial-gradient(ellipse, rgba(249,171,0,0.08) 0%, rgba(217,48,37,0.04) 35%, transparent 65%); filter: blur(60px); }
+    [data-theme="light"] .hero .hero-blob-extra { background: radial-gradient(ellipse, rgba(18,164,175,0.08) 0%, transparent 70%); }
+    [data-theme="light"] .hero h1 { color: #202124; }
+    [data-theme="light"] .hero-sub { color: #5f6368; }
+    [data-theme="light"] .hero-pill { background: rgba(0,0,0,0.04); border-color: #dadce0; color: #5f6368; }
+    [data-theme="light"] .nav-link { color: #5f6368; }
+    [data-theme="light"] .nav-link:hover { color: #202124; }
+    [data-theme="light"] .nav-logo { color: #202124; }
+    [data-theme="light"] .nav-icon-btn { border-color: #dadce0; color: #5f6368; }
+    [data-theme="light"] .nav-icon-btn:hover { background: #f1f3f4; color: #202124; border-color: #c6c9cd; }
+    [data-theme="light"] .scroll-indicator-track { border-color: #dadce0; }
+    [data-theme="light"] .scroll-indicator-dot { background: #9aa0a6; }
+    [data-theme="light"] .shortcut-bar { border-color: #dadce0; background: rgba(0,0,0,0.02); }
+    [data-theme="light"] .shortcut-item { color: #5f6368; }
+    [data-theme="light"] .shortcut-item:hover { color: #1a73e8; background: rgba(26,115,232,0.08); }
+    [data-theme="light"] .shortcut-key { background: #f1f3f4; color: #202124; }
+    [data-theme="light"] .dashboard { background: #ffffff; }
+    [data-theme="light"] .section-header { border-bottom-color: #e8eaed; }
+    [data-theme="light"] .section-title { color: #1a73e8; }
+    [data-theme="light"] .section-link { color: #5f6368; }
+    [data-theme="light"] .section-link:hover { color: #1a73e8; }
+    [data-theme="light"] .focus-item:hover { background: #f1f3f4; }
+    [data-theme="light"] .focus-item.status-active { background: rgba(26,115,232,0.06); }
+    [data-theme="light"] .focus-prio.prio-l { background: rgba(26,115,232,0.1); color: #1a73e8; }
+    [data-theme="light"] .focus-prio.prio-n { background: #f1f3f4; color: #5f6368; }
+    [data-theme="light"] .focus-prio.prio-o { background: #f8f9fa; color: #9aa0a6; }
+    [data-theme="light"] .focus-name { color: #202124; }
+    [data-theme="light"] .focus-feature { color: #9aa0a6; }
+    [data-theme="light"] .focus-status { color: #9aa0a6; }
+    [data-theme="light"] .focus-empty { color: #9aa0a6; }
+    [data-theme="light"] .activity-date { color: #9aa0a6; }
+    [data-theme="light"] .activity-dot { background: #1a73e8; }
+    [data-theme="light"] .activity-text { color: #5f6368; }
+    [data-theme="light"] .activity-list::-webkit-scrollbar-thumb { background: #dadce0; }
+    [data-theme="light"] .deadline-strip { border-color: #e8eaed; }
+    [data-theme="light"] .deadline-chip { background: #f1f3f4; color: #5f6368; }
+    [data-theme="light"] .deadline-chip.overdue { background: rgba(217,48,37,0.08); color: #d93025; }
+    [data-theme="light"] .deadline-chip.urgent { background: rgba(249,171,0,0.1); color: #e37400; }
+    [data-theme="light"] .deadline-chip .deadline-due { color: #9aa0a6; }
+    [data-theme="light"] .sync-nudge { background: rgba(26,115,232,0.06); border-left-color: #1a73e8; }
+    [data-theme="light"] .sync-nudge-text { color: #202124; }
+    [data-theme="light"] .sync-nudge-link { color: #1a73e8; background: rgba(26,115,232,0.08); }
+    [data-theme="light"] .sync-nudge-link:hover { background: rgba(26,115,232,0.14); }
+    [data-theme="light"] .quote-section { border-color: #e8eaed; background: #f8f9fa; }
+    [data-theme="light"] .quote-section::before { background: linear-gradient(90deg, #1a73e8, #1e8e3e, #f9ab00, #d93025); }
+    [data-theme="light"] .quote-text { color: #5f6368; }
+    [data-theme="light"] .quote-source { color: #9aa0a6; }
+    [data-theme="light"] .greeting { color: #202124; }
+    [data-theme="light"] .greeting-date { color: #5f6368; }
+    [data-theme="light"] footer { background: #f8f9fa; border-color: #e8eaed; }
+    [data-theme="light"] .footer-text { color: #9aa0a6; }
+    [data-theme="light"] .footer-links a { color: #5f6368; }
+    [data-theme="light"] .footer-links a:hover { color: #1a73e8; }
+    [data-theme="light"] .nav-icon-btn .icon-sun { display: none; }
+    [data-theme="light"] .nav-icon-btn .icon-moon { display: block; }
+
+    /* ─── Top Nav ─── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 72px;
+      background: transparent;
+    }
+    .nav-inner {
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #e8eaed;
+    }
+    .nav-logo-mark {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .nav-logo:hover .nav-logo-mark {
+      opacity: 0.8;
+    }
+    .nav-logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+    }
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.7);
+      text-decoration: none;
+      transition: color 0.2s;
+      letter-spacing: 0.25px;
+    }
+    .nav-link:hover { color: #e8eaed; }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-icon-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent;
+      color: rgba(232,234,237,0.6);
+      border-radius: 50%;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .nav-icon-btn:hover { background: rgba(255,255,255,0.08); color: #e8eaed; border-color: rgba(255,255,255,0.2); }
+    .nav-icon-btn svg { width: 18px; height: 18px; }
+    .nav-icon-btn .icon-sun { display: block; }
+    .nav-icon-btn .icon-moon { display: none; }
+
+    /* ─── Hero — Google I/O style animated gradient mesh ─── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 40px 80px;
+      position: relative;
+      overflow: hidden;
+      background: var(--hero-bg, #131325);
+      transition: background 0.8s ease;
+    }
+
+    /* Animated gradient blobs — Google I/O style colorful mesh */
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 1000px;
+      height: 1000px;
+      top: 35%;
+      left: 55%;
+      transform: translate(-50%, -50%);
+      background: var(--hero-glow-1, radial-gradient(ellipse, rgba(66,133,244,0.25) 0%, rgba(52,168,83,0.08) 40%, transparent 70%));
+      pointer-events: none;
+      filter: blur(40px);
+      animation: blob-drift 18s ease-in-out infinite alternate;
+      transition: background 0.8s ease;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      top: 55%;
+      left: 35%;
+      transform: translate(-50%, -50%);
+      background: var(--hero-glow-2, radial-gradient(ellipse, rgba(234,67,53,0.15) 0%, rgba(251,188,4,0.08) 35%, transparent 65%));
+      pointer-events: none;
+      filter: blur(50px);
+      animation: blob-drift 22s ease-in-out infinite alternate-reverse;
+      transition: background 0.8s ease;
+    }
+
+    /* Third colorful blob via box-shadow trick on hero */
+    .hero .hero-blob-extra {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      top: 20%;
+      right: -5%;
+      background: radial-gradient(ellipse, rgba(36,193,224,0.12) 0%, rgba(137,180,250,0.06) 40%, transparent 70%);
+      pointer-events: none;
+      filter: blur(60px);
+      animation: blob-drift 15s ease-in-out infinite alternate;
+    }
+
+    @keyframes blob-drift {
+      0% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-48%, -52%) scale(1.05); }
+      100% { transform: translate(-52%, -48%) scale(0.97); }
+    }
+
+    .hero > * { position: relative; z-index: 1; }
+
+    .greeting {
+      font-size: 16px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.6);
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+    .greeting-date {
+      color: rgba(232,234,237,0.4);
+      margin-left: 10px;
+      font-weight: 400;
+    }
+
+    .hero h1 {
+      font-size: clamp(48px, 6.5vw, 88px);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -2px;
+      color: #ffffff;
+      margin-bottom: 28px;
+      max-width: 860px;
+      font-family: 'Google Sans', 'Inter', sans-serif;
+    }
+
+    .hero-sub {
+      font-size: clamp(17px, 1.8vw, 20px);
+      color: rgba(232,234,237,0.5);
+      line-height: 1.7;
+      max-width: 600px;
+      margin-bottom: 48px;
+      font-weight: 400;
+      min-height: 36px;
+    }
+
+    /* ─── #2: Keyboard Shortcut Bar — Google I/O pill style ─── */
+    .shortcut-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .shortcut-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.65);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .shortcut-item:hover { background: rgba(255,255,255,0.1); color: #e8eaed; }
+    .shortcut-key {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 26px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.1);
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(232,234,237,0.8);
+      font-family: inherit;
+    }
+    .shortcut-sep {
+      width: 1px;
+      height: 20px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* Scroll indicator — Google style */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+    .scroll-indicator-track {
+      width: 26px;
+      height: 42px;
+      border-radius: 13px;
+      border: 2px solid rgba(255,255,255,0.15);
+      display: flex;
+      justify-content: center;
+      padding-top: 8px;
+    }
+    .scroll-indicator-dot {
+      width: 4px;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--g-blue);
+      opacity: 0.7;
+      animation: scroll-dot 2s ease-in-out infinite;
+    }
+    @keyframes scroll-dot {
+      0%, 100% { opacity: 0.7; transform: translateY(0); }
+      50% { opacity: 0.3; transform: translateY(14px); }
+    }
+
+    /* ─── #5: Sync Prep Nudge — Google I/O card style ─── */
+    .sync-nudge {
+      display: none;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 28px;
+      margin: 0 10%;
+      border-left: 4px solid var(--g-blue);
+      border-radius: 0 16px 16px 0;
+      background: rgba(66,133,244,0.08);
+    }
+    .sync-nudge.visible { display: flex; margin-top: 24px; margin-bottom: 8px; }
+    .sync-nudge-icon {
+      width: 22px;
+      height: 22px;
+      color: var(--g-blue);
+      flex-shrink: 0;
+    }
+    [data-theme="light"] .sync-nudge-icon { color: var(--g-blue); }
+    .sync-nudge-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.85);
+      flex: 1;
+    }
+    .sync-nudge-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #fff;
+      text-decoration: none;
+      white-space: nowrap;
+      padding: 8px 20px;
+      border-radius: 100px;
+      background: var(--g-blue);
+      transition: background 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.25px;
+    }
+    .sync-nudge-link:hover { background: #3367d6; box-shadow: 0 1px 3px rgba(66,133,244,0.4); }
+
+    /* ─── Dashboard Section ─── */
+    .dashboard {
+      padding: 64px 10% 56px;
+      background: #131325;
+    }
+
+    /* ─── #4: Deadline Strip — Google pill chips ─── */
+    .deadline-strip {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 24px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      overflow-x: auto;
+    }
+    .deadline-strip.visible { display: flex; }
+    .deadline-strip::-webkit-scrollbar { display: none; }
+    .deadline-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(232,234,237,0.35);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .deadline-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.06);
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.7);
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .deadline-chip:hover { background: rgba(255,255,255,0.1); box-shadow: var(--shadow-sm); }
+    .deadline-chip.overdue { background: rgba(234,67,53,0.12); color: #ff6d6a; }
+    .deadline-chip.urgent { background: rgba(251,188,4,0.1); color: #fbbc04; }
+    .deadline-chip .deadline-due {
+      font-size: 11px;
+      color: rgba(232,234,237,0.4);
+      font-weight: 400;
+    }
+
+    .dashboard-inner {
+      display: grid;
+      grid-template-columns: 7fr 3fr;
+      gap: 36px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      color: var(--g-blue);
+      font-family: 'Google Sans', 'Inter', sans-serif;
+    }
+    .section-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--g-blue);
+      text-decoration: none;
+      transition: opacity 0.15s;
+      opacity: 0.8;
+    }
+    .section-link:hover { opacity: 1; }
+
+    /* Focus Today — Google card style */
+    .focus-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .focus-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .focus-item:hover { background: rgba(255,255,255,0.05); }
+    .focus-item.status-active { background: rgba(66,133,244,0.08); }
+    .focus-item.status-blocked { opacity: 0.5; }
+    .focus-prio {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .focus-prio.prio-l { background: rgba(66,133,244,0.15); color: #89b4fa; }
+    .focus-prio.prio-n { background: rgba(255,255,255,0.06); color: rgba(232,234,237,0.5); }
+    .focus-prio.prio-o { background: rgba(255,255,255,0.03); color: rgba(232,234,237,0.3); }
+    .focus-info { flex: 1; min-width: 0; }
+    .focus-name {
+      font-size: 14px;
+      font-weight: 500;
+      color: #e8eaed;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .focus-feature {
+      font-size: 12px;
+      color: rgba(232,234,237,0.4);
+      margin-top: 3px;
+      display: block;
+    }
+    .focus-status {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.4);
+      white-space: nowrap;
+    }
+    .focus-empty {
+      padding: 28px 18px;
+      font-size: 14px;
+      color: rgba(232,234,237,0.35);
+    }
+
+    /* Activity Feed */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    .activity-list::-webkit-scrollbar { width: 4px; }
+    .activity-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 4px; }
+    .activity-date {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(232,234,237,0.35);
+      padding: 14px 0 6px;
+    }
+    .activity-date:first-child { padding-top: 0; }
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 7px 0;
+    }
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--g-blue);
+      opacity: 0.6;
+      flex-shrink: 0;
+      margin-top: 5px;
+    }
+    .activity-text {
+      font-size: 13px;
+      color: rgba(232,234,237,0.55);
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ─── Persona Drip Section ─── */
+    .drip-section {
+      padding: 56px 10% 56px;
+      background: #131325;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    [data-theme="light"] .drip-section { background: #f8f9fa; border-top-color: #e8eaed; }
+
+    .drip-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    [data-theme="light"] .drip-header { border-bottom-color: #e8eaed; }
+    .drip-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .drip-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .drip-nav-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: transparent;
+      color: rgba(232,234,237,0.5);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .drip-nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.08); color: #e8eaed; border-color: rgba(255,255,255,0.2); }
+    .drip-nav-btn:disabled { opacity: 0.2; cursor: default; }
+    .drip-nav-btn svg { width: 16px; height: 16px; }
+    [data-theme="light"] .drip-nav-btn { border-color: #dadce0; color: #9aa0a6; }
+    [data-theme="light"] .drip-nav-btn:hover:not(:disabled) { background: #f1f3f4; color: #202124; }
+    .drip-counter {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(232,234,237,0.35);
+      padding: 0 8px;
+      white-space: nowrap;
+    }
+    [data-theme="light"] .drip-counter { color: #9aa0a6; }
+
+    .drip-card {
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.03);
+      overflow: hidden;
+      transition: opacity 0.25s ease, box-shadow 0.3s ease;
+    }
+    .drip-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+    [data-theme="light"] .drip-card { border-color: #dadce0; background: #ffffff; }
+    [data-theme="light"] .drip-card:hover { box-shadow: var(--shadow-md); }
+
+    .drip-card-top {
+      padding: 28px 32px 16px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .drip-scenario {
+      font-size: 18px;
+      font-weight: 600;
+      color: #e8eaed;
+      line-height: 1.4;
+      flex: 1;
+      font-family: 'Google Sans', 'Inter', sans-serif;
+    }
+    [data-theme="light"] .drip-scenario { color: #202124; }
+    .drip-meta {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .drip-tag {
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+    .drip-tag-category {
+      background: rgba(168,85,247,0.12);
+      color: #c084fc;
+    }
+    .drip-tag-read {
+      background: rgba(24,128,56,0.15);
+      color: #34d399;
+      font-weight: 600;
+    }
+    [data-theme="light"] .drip-tag-read { background: rgba(24,128,56,0.1); color: #188038; }
+    .drip-mark-read-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: inherit;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 20px;
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .drip-mark-read-btn:hover { background: rgba(24,128,56,0.15); color: #34d399; border-color: rgba(24,128,56,0.3); }
+    [data-theme="light"] .drip-mark-read-btn { border-color: #dadce0; color: #9aa0a6; }
+    [data-theme="light"] .drip-mark-read-btn:hover { background: rgba(24,128,56,0.08); color: #188038; border-color: rgba(24,128,56,0.3); }
+    .drip-tag-segment {
+      background: rgba(66,133,244,0.12);
+      color: #89b4fa;
+    }
+    [data-theme="light"] .drip-tag-category { background: rgba(168,85,247,0.08); color: #7c3aed; }
+    [data-theme="light"] .drip-tag-segment { background: rgba(26,115,232,0.08); color: #1a73e8; }
+
+    .drip-card-body {
+      padding: 0 32px 28px;
+    }
+    .drip-context {
+      font-size: 15px;
+      color: rgba(232,234,237,0.6);
+      line-height: 1.7;
+      margin-bottom: 18px;
+    }
+    [data-theme="light"] .drip-context { color: #5f6368; }
+
+    .drip-expandable {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .drip-expandable.open { max-height: 3000px; }
+
+    .drip-section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: rgba(232,234,237,0.35);
+      margin: 18px 0 10px;
+    }
+    [data-theme="light"] .drip-section-label { color: #9aa0a6; }
+
+    .drip-bullets {
+      list-style: none;
+      padding: 0;
+    }
+    .drip-bullets li {
+      position: relative;
+      padding: 7px 0 7px 20px;
+      font-size: 14px;
+      color: rgba(232,234,237,0.6);
+      line-height: 1.65;
+    }
+    [data-theme="light"] .drip-bullets li { color: #5f6368; }
+    .drip-bullets li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--g-blue);
+      opacity: 0.5;
+    }
+    .drip-bullets li strong {
+      color: rgba(232,234,237,0.85);
+      font-weight: 600;
+    }
+    [data-theme="light"] .drip-bullets li strong { color: #202124; }
+
+    .drip-friction {
+      padding: 16px 20px;
+      background: rgba(234,67,53,0.06);
+      border-left: 4px solid var(--g-red);
+      border-radius: 0 12px 12px 0;
+      margin-top: 10px;
+    }
+    [data-theme="light"] .drip-friction { background: rgba(234,67,53,0.04); }
+    .drip-friction p {
+      font-size: 14px;
+      color: rgba(232,234,237,0.6);
+      line-height: 1.65;
+      margin-bottom: 6px;
+    }
+    .drip-friction p:last-child { margin-bottom: 0; }
+    [data-theme="light"] .drip-friction p { color: #5f6368; }
+    .drip-friction strong {
+      color: rgba(232,234,237,0.85);
+    }
+    [data-theme="light"] .drip-friction strong { color: #202124; }
+
+    .drip-takeaway {
+      padding: 16px 20px;
+      background: rgba(66,133,244,0.06);
+      border-left: 4px solid var(--g-blue);
+      border-radius: 0 12px 12px 0;
+      margin-top: 14px;
+    }
+    [data-theme="light"] .drip-takeaway { background: rgba(26,115,232,0.04); }
+    .drip-takeaway p {
+      font-size: 14px;
+      color: rgba(232,234,237,0.65);
+      line-height: 1.65;
+      font-style: italic;
+    }
+    [data-theme="light"] .drip-takeaway p { color: #5f6368; }
+
+    .drip-expand-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      background: rgba(66,133,244,0.12);
+      color: var(--g-blue);
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 100px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s, box-shadow 0.2s;
+      letter-spacing: 0.25px;
+    }
+    .drip-expand-btn:hover { background: rgba(66,133,244,0.2); }
+    [data-theme="light"] .drip-expand-btn { background: rgba(26,115,232,0.08); color: #1a73e8; }
+    [data-theme="light"] .drip-expand-btn:hover { background: rgba(26,115,232,0.14); }
+    .drip-expand-btn svg {
+      width: 14px;
+      height: 14px;
+      transition: transform 0.25s ease;
+    }
+    .drip-expand-btn.open svg { transform: rotate(180deg); }
+
+    .drip-date {
+      font-size: 12px;
+      color: rgba(232,234,237,0.25);
+      margin-top: 14px;
+    }
+    [data-theme="light"] .drip-date { color: #9aa0a6; }
+
+    .drip-empty {
+      padding: 48px 24px;
+      text-align: center;
+      font-size: 14px;
+      color: rgba(232,234,237,0.35);
+    }
+    [data-theme="light"] .drip-empty { color: #9aa0a6; }
+
+    /* ─── #6: Quote Section — Google I/O accent bar ─── */
+    .quote-section {
+      padding: 40px 10%;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      text-align: center;
+      background: #0e0e20;
+      position: relative;
+    }
+    .quote-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, var(--g-blue), var(--g-green), var(--g-yellow), var(--g-red));
+    }
+    .quote-text {
+      font-size: 16px;
+      font-style: italic;
+      color: rgba(232,234,237,0.4);
+      line-height: 1.7;
+      max-width: 700px;
+      margin: 0 auto 10px;
+      font-family: 'Google Sans', 'Inter', sans-serif;
+    }
+    .quote-source {
+      font-size: 11px;
+      color: rgba(232,234,237,0.25);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+    }
+
+    /* ─── Footer — Google I/O style ─── */
+    footer {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 32px 40px;
+      background: #0e0e20;
+    }
+    .footer-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-text {
+      font-size: 13px;
+      color: rgba(232,234,237,0.35);
+      font-weight: 400;
+    }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-size: 13px;
+      color: rgba(232,234,237,0.4);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-weight: 500;
+    }
+    .footer-links a:hover { color: var(--g-blue); }
+
+    /* ─── #7: Scroll Reveal Animation ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 768px) {
+      .nav-inner { padding: 0 20px; }
+      .nav-center { display: none; }
+      .hero { padding: 100px 20px 70px; min-height: 100vh; }
+      .hero h1 { letter-spacing: -1px; }
+      .shortcut-bar { flex-wrap: wrap; justify-content: center; }
+      .shortcut-sep { display: none; }
+      .sync-nudge { margin: 0 5%; margin-top: -20px; margin-bottom: 8px; }
+      .dashboard { padding: 48px 5%; }
+      .dashboard-inner { grid-template-columns: 1fr; }
+      .quote-section { padding: 28px 5%; }
+      footer { padding: 24px 20px; }
+      .footer-inner { flex-direction: column; gap: 14px; }
+    }
+  </style>
+</head>
+<body class="page-home">
+
+  <!-- ─── Top Nav (injected by navbar.js) ─── -->
+  <script src="/resources/navbar.js"></script>
+
+  <!-- ─── Hero ─── -->
+  <section class="hero" id="hero">
+    <div class="hero-blob-extra"></div>
+    <div class="greeting" id="greeting">Good morning <span class="greeting-date" id="greeting-date"></span></div>
+    <h1>What are you working on today?</h1>
+    <p class="hero-sub" id="hero-sub">Your workspace is ready. Pick up where you left off or start something new.</p>
+
+    <!-- #2: Shortcut Bar -->
+    <div class="shortcut-bar">
+      <a href="/tracker" class="shortcut-item"><span class="shortcut-key">T</span> Tracker</a>
+      <div class="shortcut-sep"></div>
+      <a href="/sync" class="shortcut-item"><span class="shortcut-key">S</span> 1:1 Sync</a>
+      <div class="shortcut-sep"></div>
+      <a href="/backlog" class="shortcut-item"><span class="shortcut-key">B</span> Backlog</a>
+      <div class="shortcut-sep"></div>
+      <span class="shortcut-item" id="shortcut-search"><span class="shortcut-key">&#8984;K</span> Search</span>
+    </div>
+
+    <div class="scroll-indicator">
+      <div class="scroll-indicator-track">
+        <div class="scroll-indicator-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- #5: Sync Prep Nudge -->
+  <div class="sync-nudge reveal" id="sync-nudge">
+    <svg class="sync-nudge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+    <span class="sync-nudge-text" id="sync-nudge-text"></span>
+    <a href="/sync" class="sync-nudge-link">Review &rarr;</a>
+  </div>
+
+  <!-- ─── Dashboard: Deadlines + Focus Today + Activity Feed ─── -->
+  <section class="dashboard reveal" id="dashboard">
+    <!-- #4: Deadline Strip -->
+    <div class="deadline-strip" id="deadline-strip">
+      <span class="deadline-label">Due Soon</span>
+    </div>
+
+    <div class="dashboard-inner">
+      <!-- Left: Focus Today (70%) -->
+      <div class="dashboard-main">
+        <div class="section-header">
+          <div class="section-title">Focus Today</div>
+          <a href="/tracker" class="section-link">Open Tracker &rarr;</a>
+        </div>
+        <div class="focus-list" id="focus-list">
+          <div class="focus-empty">Loading tasks...</div>
+        </div>
+      </div>
+      <!-- Right: Activity Feed (30%) -->
+      <div class="dashboard-side">
+        <div class="section-header">
+          <div class="section-title">Recent Activity</div>
+        </div>
+        <div class="activity-list" id="activity-list">
+          <div class="focus-empty">Loading...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Persona Drip -->
+  <section class="drip-section reveal" id="drip-section">
+    <div class="drip-header">
+      <div class="drip-header-left">
+        <div class="section-title">Persona Drip</div>
+        <span class="drip-counter" id="drip-counter"></span>
+      </div>
+      <div class="drip-nav">
+        <button class="drip-nav-btn" id="drip-prev" title="Previous drip" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button class="drip-nav-btn" id="drip-next" title="Next drip" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="drip-container">
+      <div class="drip-empty">Loading drip...</div>
+    </div>
+  </section>
+
+  <!-- #6: Strategic Quote -->
+  <section class="quote-section reveal" id="quote-section">
+    <div class="quote-text" id="quote-text"></div>
+    <div class="quote-source">Strategic Playbook</div>
+  </section>
+
+  <!-- ─── Footer ─── -->
+  <footer class="reveal">
+    <div class="footer-inner">
+      <span class="footer-text">PM OS — AI-powered PM workspace</span>
+      <div class="footer-links">
+        <a href="/tracker">Action Tracker</a>
+        <a href="/backlog">Backlog</a>
+        <a href="/sync">1:1 Check-in</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Theme is handled by navbar.js
+    const savedTheme = localStorage.getItem('portfolio-theme');
+    if (savedTheme) {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
+    // ─── #8: Time-Aware Hero Background — Google I/O multi-color blobs ───
+    (function() {
+      const hour = new Date().getHours();
+      const hero = document.getElementById('hero');
+
+      if (hour >= 5 && hour < 12) {
+        // Morning — Google cyan-blue-green
+        hero.style.setProperty('--hero-bg', '#111128');
+        hero.style.setProperty('--hero-glow-1', 'radial-gradient(ellipse, rgba(36,193,224,0.22) 0%, rgba(66,133,244,0.10) 40%, transparent 70%)');
+        hero.style.setProperty('--hero-glow-2', 'radial-gradient(ellipse, rgba(52,168,83,0.14) 0%, rgba(251,188,4,0.05) 40%, transparent 65%)');
+      } else if (hour >= 12 && hour < 17) {
+        // Afternoon — Google blue-yellow-green
+        hero.style.setProperty('--hero-bg', '#111128');
+        hero.style.setProperty('--hero-glow-1', 'radial-gradient(ellipse, rgba(66,133,244,0.28) 0%, rgba(52,168,83,0.08) 40%, transparent 70%)');
+        hero.style.setProperty('--hero-glow-2', 'radial-gradient(ellipse, rgba(251,188,4,0.12) 0%, rgba(234,67,53,0.06) 35%, transparent 65%)');
+      } else if (hour >= 17 && hour < 21) {
+        // Evening — Google red-yellow-blue
+        hero.style.setProperty('--hero-bg', '#0f0f26');
+        hero.style.setProperty('--hero-glow-1', 'radial-gradient(ellipse, rgba(234,67,53,0.18) 0%, rgba(251,188,4,0.08) 40%, transparent 70%)');
+        hero.style.setProperty('--hero-glow-2', 'radial-gradient(ellipse, rgba(66,133,244,0.14) 0%, rgba(168,85,247,0.06) 35%, transparent 65%)');
+      } else {
+        // Night — deep blue-purple
+        hero.style.setProperty('--hero-bg', '#0d0d22');
+        hero.style.setProperty('--hero-glow-1', 'radial-gradient(ellipse, rgba(66,133,244,0.20) 0%, rgba(36,193,224,0.06) 40%, transparent 70%)');
+        hero.style.setProperty('--hero-glow-2', 'radial-gradient(ellipse, rgba(168,85,247,0.10) 0%, transparent 60%)');
+      }
+    })();
+
+    // ─── Dynamic Greeting ───
+    (function() {
+      const hour = new Date().getHours();
+      let greet = 'Good evening';
+      if (hour < 12) greet = 'Good morning';
+      else if (hour < 17) greet = 'Good afternoon';
+
+      const now = new Date();
+      const opts = { weekday: 'long', month: 'long', day: 'numeric' };
+      const dateStr = now.toLocaleDateString('en-US', opts);
+
+      document.getElementById('greeting').innerHTML =
+        greet + ' <span class="greeting-date">' + dateStr + '</span>';
+    })();
+
+    // ─── #2: Keyboard Shortcuts ───
+    document.addEventListener('keydown', (e) => {
+      // Don't trigger if user is typing in an input
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+      switch (e.key.toLowerCase()) {
+        case 't': window.location.href = '/tracker'; break;
+        case 's': window.location.href = '/sync'; break;
+        case 'b': window.location.href = '/backlog'; break;
+      }
+    });
+    document.getElementById('shortcut-search').addEventListener('click', () => {
+      const overlay = document.getElementById('velyo-search-overlay');
+      if (overlay) {
+        overlay.classList.add('visible');
+        setTimeout(() => {
+          const input = document.getElementById('velyo-search-input');
+          if (input) input.focus();
+        }, 50);
+      }
+    });
+
+    // ─── #7: Scroll Reveal (IntersectionObserver) ───
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ─── Focus Today: Load Leverage + In Progress tasks ───
+    let allTasks = [];
+    async function loadFocusTasks() {
+      try {
+        const res = await fetch('/api/tasks');
+        const data = await res.json();
+        allTasks = data.tasks;
+        const focus = allTasks.filter(t =>
+          t.status !== 'Done' && (t.priority === 'L' || t.status === 'In Progress')
+        ).sort((a, b) => {
+          const prio = { L: 0, N: 1, O: 2 };
+          if (prio[a.priority] !== prio[b.priority]) return prio[a.priority] - prio[b.priority];
+          const statusOrder = { 'In Progress': 0, 'Not Started': 1, 'Blocked': 2 };
+          return (statusOrder[a.status] || 9) - (statusOrder[b.status] || 9);
+        });
+
+        const container = document.getElementById('focus-list');
+        if (focus.length === 0) {
+          container.innerHTML = '<div class="focus-empty">No Leverage or In Progress tasks. You\'re clear.</div>';
+        } else {
+          container.innerHTML = focus.map(t => {
+            const prioClass = t.priority === 'L' ? 'prio-l' : t.priority === 'N' ? 'prio-n' : 'prio-o';
+            const statusClass = t.status === 'In Progress' ? 'status-active' : t.status === 'Blocked' ? 'status-blocked' : '';
+            return `
+              <a href="/tracker" class="focus-item ${statusClass}">
+                <span class="focus-prio ${prioClass}">${t.priority}</span>
+                <div class="focus-info">
+                  <div class="focus-name">${t.name}</div>
+                  ${t.feature ? `<span class="focus-feature">${t.feature}</span>` : ''}
+                </div>
+                <span class="focus-status">${t.status}</span>
+              </a>`;
+          }).join('');
+        }
+
+        // ─── #4: Deadline Strip ───
+        loadDeadlines(allTasks);
+      } catch (e) {
+        document.getElementById('focus-list').innerHTML = '<div class="focus-empty">Could not load tasks</div>';
+      }
+    }
+
+    function loadDeadlines(tasks) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+      const weekOut = new Date(now);
+      weekOut.setDate(weekOut.getDate() + 7);
+
+      const upcoming = tasks.filter(t => {
+        if (!t.due || t.status === 'Done') return false;
+        const d = new Date(t.due + 'T00:00:00');
+        return d <= weekOut;
+      }).sort((a, b) => new Date(a.due) - new Date(b.due));
+
+      if (upcoming.length === 0) return;
+
+      const strip = document.getElementById('deadline-strip');
+      upcoming.forEach(t => {
+        const d = new Date(t.due + 'T00:00:00');
+        const diff = Math.ceil((d - now) / 86400000);
+        let cls = 'deadline-chip';
+        let label = '';
+        if (diff < 0) { cls += ' overdue'; label = 'Overdue'; }
+        else if (diff === 0) { cls += ' urgent'; label = 'Today'; }
+        else if (diff === 1) { cls += ' urgent'; label = 'Tomorrow'; }
+        else { label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+
+        const chip = document.createElement('a');
+        chip.href = '/tracker';
+        chip.className = cls;
+        chip.innerHTML = `${t.name} <span class="deadline-due">${label}</span>`;
+        strip.appendChild(chip);
+      });
+      strip.classList.add('visible');
+    }
+
+    // ─── Shorten activity text ───
+    function shortenActivity(text) {
+      let short = text.split(/\s[—–]\s/)[0];
+      if (short.length > 60) {
+        const dotIdx = short.indexOf('.');
+        if (dotIdx > 10) short = short.substring(0, dotIdx);
+      }
+      if (short.length > 70) short = short.substring(0, 67) + '...';
+      return short;
+    }
+
+    // ─── Activity Feed: Load from activity log ───
+    async function loadActivity() {
+      try {
+        const res = await fetch('/api/activity-log');
+        const { entries } = await res.json();
+        const container = document.getElementById('activity-list');
+        const recent = entries.slice(0, 10);
+        if (recent.length === 0) {
+          container.innerHTML = '<div class="focus-empty">No activity yet</div>';
+          return;
+        }
+        let lastDate = '';
+        container.innerHTML = recent.map(e => {
+          let dateHeader = '';
+          if (e.date !== lastDate) {
+            lastDate = e.date;
+            const d = new Date(e.date + 'T00:00:00');
+            const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            dateHeader = `<div class="activity-date">${label}</div>`;
+          }
+          const text = e.short || shortenActivity(e.what);
+          return `${dateHeader}<div class="activity-item"><div class="activity-dot"></div><div class="activity-text">${text}</div></div>`;
+        }).join('');
+
+        // ─── #3: "Pick up where you left off" ───
+        if (entries.length > 0) {
+          const last = shortenActivity(entries[0].what);
+          document.getElementById('hero-sub').innerHTML =
+            'Pick up where you left off &mdash; <strong>' + last + '</strong>';
+        }
+      } catch (e) {
+        document.getElementById('activity-list').innerHTML = '<div class="focus-empty">Could not load activity</div>';
+      }
+    }
+
+    // ─── #5: Sync Prep Nudge ───
+    async function loadSyncNudge() {
+      try {
+        const res = await fetch('/api/sync-points');
+        const { totalQueued, breakdown } = await res.json();
+        if (totalQueued > 0) {
+          const peopleCount = breakdown.length;
+          const text = totalQueued + ' item' + (totalQueued > 1 ? 's' : '') +
+            ' queued across ' + peopleCount + ' 1:1' + (peopleCount > 1 ? 's' : '');
+          document.getElementById('sync-nudge-text').textContent = text;
+          document.getElementById('sync-nudge').classList.add('visible');
+        }
+      } catch (e) { /* silent */ }
+    }
+
+    // ─── #6: Strategic Playbook Quotes ───
+    (function() {
+      const quotes = [
+        "Be the PM who sits at the Strategic Apex \u2014 the one who sets vision, governs AI systems, and creates proof of value.",
+        "The future PM doesn't write tickets. They set product vision, navigate ambiguity, and orchestrate AI agent systems.",
+        "Judgment, domain expertise, and stakeholder alignment \u2014 these are the moat skills no agent can replicate.",
+        "Every decision: Am I building a moat skill? Am I operating at the Strategic Apex? Could an agent do this instead?",
+        "The M-Shaped Orchestrator: deep in domain expertise, deep in AI governance, broad across platform thinking.",
+        "Don't optimize the task. Eliminate it. Then design the system that prevents it from existing.",
+        "Proof of value isn't a deck \u2014 it's the accumulated evidence that you operate where others can't."
+      ];
+      const idx = Math.floor(Math.random() * quotes.length);
+      document.getElementById('quote-text').textContent = '\u201C' + quotes[idx] + '\u201D';
+    })();
+
+    // ─── Persona Drip ───
+    let drips = [];
+    let dripIndex = 0;
+    const DRIP_READ_KEY = 'pmos-drips-read';
+
+    function getReadDrips() {
+      try { return JSON.parse(localStorage.getItem(DRIP_READ_KEY)) || []; } catch { return []; }
+    }
+    function isDripRead(num) { return getReadDrips().includes(num); }
+    function markDripRead(num) {
+      const read = getReadDrips();
+      if (!read.includes(num)) { read.push(num); localStorage.setItem(DRIP_READ_KEY, JSON.stringify(read)); }
+      renderDrip();
+    }
+
+    function parseDripContent(content) {
+      // Extract structured sections from the markdown drip file
+      const result = { scenario: '', time: '', context: '', bullets: [], friction: [], takeaway: '' };
+
+      const scenarioMatch = content.match(/\*\*Scenario:\*\*\s*(.+)/);
+      if (scenarioMatch) result.scenario = scenarioMatch[1].trim();
+
+      const timeMatch = content.match(/\*\*Time:\*\*\s*(.+)/);
+      if (timeMatch) result.time = timeMatch[1].trim();
+
+      const contextMatch = content.match(/\*\*Context:\*\*\s*([\s\S]*?)(?=\n---)/);
+      if (contextMatch) result.context = contextMatch[1].trim();
+
+      // Play-by-play bullets
+      const bulletSection = content.match(/\*\*The Play-by-Play:\*\*\s*([\s\S]*?)(?=\n---)/);
+      if (bulletSection) {
+        result.bullets = bulletSection[1].trim().split('\n')
+          .filter(l => l.trim().startsWith('-') || l.trim().startsWith('*'))
+          .map(l => l.replace(/^[\s\-\*]+/, '').trim())
+          .filter(Boolean);
+      }
+
+      // Invisible Friction
+      const frictionSection = content.match(/\*\*The Invisible Friction:\*\*\s*([\s\S]*?)(?=\n---)/);
+      if (frictionSection) {
+        result.friction = frictionSection[1].trim().split('\n')
+          .filter(l => l.trim().startsWith('-') || l.trim().startsWith('*'))
+          .map(l => l.replace(/^[\s\-\*]+/, '').trim())
+          .filter(Boolean);
+      }
+
+      // PM Takeaway
+      const takeawayMatch = content.match(/\*\*PM Takeaway:\*\*\s*([\s\S]*?)(?=\n---)/);
+      if (takeawayMatch) result.takeaway = takeawayMatch[1].trim();
+
+      return result;
+    }
+
+    function renderDrip() {
+      const container = document.getElementById('drip-container');
+      const counter = document.getElementById('drip-counter');
+      const prevBtn = document.getElementById('drip-prev');
+      const nextBtn = document.getElementById('drip-next');
+
+      if (drips.length === 0) {
+        container.innerHTML = '<div class="drip-empty">No persona drips yet. Run the persona-drip agent to generate your first one.</div>';
+        counter.textContent = '';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+
+      const drip = drips[dripIndex];
+      const parsed = parseDripContent(drip.content);
+      const displayNum = drip.num;
+      counter.textContent = `#${displayNum} of ${drips.length}`;
+
+      // Navigation: drips[0] = newest, drips[length-1] = oldest
+      // "prev" goes to older (higher index), "next" goes to newer (lower index)
+      prevBtn.disabled = dripIndex >= drips.length - 1;
+      nextBtn.disabled = dripIndex <= 0;
+
+      const bulletHtml = parsed.bullets.length > 0
+        ? parsed.bullets.map(b => {
+            // Bold text before first em-dash or colon for time stamps
+            const formatted = b.replace(/^(\d[\d:]+\s*(?:AM|PM)?)\s*[—–]\s*/, '<strong>$1 —</strong> ');
+            return `<li>${formatted}</li>`;
+          }).join('')
+        : '';
+
+      const frictionHtml = parsed.friction.length > 0
+        ? parsed.friction.map(f => {
+            const formatted = f.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            return `<p>${formatted}</p>`;
+          }).join('')
+        : '';
+
+      const d = new Date(drip.date + 'T00:00:00');
+      const dateLabel = d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+
+      container.innerHTML = `
+        <div class="drip-card">
+          <div class="drip-card-top">
+            <div class="drip-scenario">${parsed.scenario || drip.scenario}</div>
+            <div class="drip-meta">
+              <span class="drip-tag drip-tag-category">${drip.category}</span>
+              <span class="drip-tag drip-tag-segment">${drip.segment}</span>
+              ${isDripRead(drip.num) ? '<span class="drip-tag drip-tag-read">Read</span>' : ''}
+            </div>
+          </div>
+          <div class="drip-card-body">
+            ${parsed.time ? `<div style="font-size:12px;color:rgba(255,255,255,0.3);margin-bottom:10px;"><span style="opacity:0.6">&#9719;</span> ${parsed.time}</div>` : ''}
+            <div class="drip-context">${parsed.context}</div>
+
+            <button class="drip-expand-btn" id="drip-expand-btn" onclick="toggleDripExpand()">
+              Read full scenario
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+
+            <div class="drip-expandable" id="drip-expandable">
+              ${bulletHtml ? `
+                <div class="drip-section-label">The Play-by-Play</div>
+                <ul class="drip-bullets">${bulletHtml}</ul>
+              ` : ''}
+              ${frictionHtml ? `
+                <div class="drip-section-label">The Invisible Friction</div>
+                <div class="drip-friction">${frictionHtml}</div>
+              ` : ''}
+              ${parsed.takeaway ? `
+                <div class="drip-section-label">PM Takeaway</div>
+                <div class="drip-takeaway"><p>${parsed.takeaway}</p></div>
+              ` : ''}
+            </div>
+
+            <div class="drip-date" style="display:flex;align-items:center;justify-content:space-between;">
+              <span>Drip #${displayNum} &middot; ${dateLabel}</span>
+              ${isDripRead(drip.num) ? '' : `<button class="drip-mark-read-btn" onclick="markDripRead(${drip.num})"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Mark as Read</button>`}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleDripExpand() {
+      const el = document.getElementById('drip-expandable');
+      const btn = document.getElementById('drip-expand-btn');
+      if (el.classList.contains('open')) {
+        el.classList.remove('open');
+        btn.classList.remove('open');
+        btn.innerHTML = 'Read full scenario <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+      } else {
+        el.classList.add('open');
+        btn.classList.add('open');
+        btn.innerHTML = 'Collapse <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+      }
+    }
+
+    async function loadDrips() {
+      try {
+        const res = await fetch('/api/drips');
+        const data = await res.json();
+        drips = data.drips || [];
+        dripIndex = 0; // Start at newest
+        renderDrip();
+      } catch {
+        document.getElementById('drip-container').innerHTML = '<div class="drip-empty">Could not load persona drips</div>';
+      }
+    }
+
+    document.getElementById('drip-prev').addEventListener('click', () => {
+      if (dripIndex < drips.length - 1) { dripIndex++; renderDrip(); }
+    });
+    document.getElementById('drip-next').addEventListener('click', () => {
+      if (dripIndex > 0) { dripIndex--; renderDrip(); }
+    });
+
+    // ─── Load all data ───
+    loadFocusTasks();
+    loadActivity();
+    loadSyncNudge();
+    loadDrips();
+  </script>
+
+</body>
+</html>
