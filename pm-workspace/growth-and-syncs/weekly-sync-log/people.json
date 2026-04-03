@@ -1,4 +1,9 @@
 [
+  { "slug": "sarah-kim", "name": "Sarah Kim", "role": "Product Director (My Manager)", "color": "#059669" },
   { "slug": "alex-chen", "name": "Alex Chen", "role": "Engineering Manager", "color": "#4F46E5" },
-  { "slug": "sarah-kim", "name": "Sarah Kim", "role": "Product Director", "color": "#059669" }
+  { "slug": "mike-torres", "name": "Mike Torres", "role": "Design Lead", "color": "#D97706" },
+  { "slug": "priya-sharma", "name": "Priya Sharma", "role": "Data Science Lead", "color": "#DC2626" },
+  { "slug": "jason-lee", "name": "Jason Lee", "role": "Customer Success Director", "color": "#7C3AED" },
+  { "slug": "rachel-nguyen", "name": "Rachel Nguyen", "role": "Solutions Architect", "color": "#0891B2" },
+  { "slug": "david-martinez", "name": "David Martinez", "role": "VP of Sales", "color": "#BE185D" }
 ]

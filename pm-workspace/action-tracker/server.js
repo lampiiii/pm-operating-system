@@ -44,9 +44,9 @@ function syncFilesFor(personSlug) {
   };
 }
 const PLAYBOOK_FILE = path.join(DIR, '..', 'growth-and-syncs', 'framework-and-mindset', 'strategic-playbook-dashboard.html');
-const BACKLOG_ACTIVE_FILE = path.join(DIR, '..', 'products', 'your-product', 'product-ideas-backlogs', 'active-backlog.md');
-const BACKLOG_COMPLETED_FILE = path.join(DIR, '..', 'products', 'your-product', 'product-ideas-backlogs', 'completed-backlog.md');
-const BACKLOG_DASHBOARD_FILE = path.join(DIR, '..', 'products', 'your-product', 'product-ideas-backlogs', 'backlog-dashboard.html');
+const BACKLOG_ACTIVE_FILE = path.join(DIR, '..', 'products', 'customer-success-management', 'product-ideas-backlogs', 'active-backlog.md');
+const BACKLOG_COMPLETED_FILE = path.join(DIR, '..', 'products', 'customer-success-management', 'product-ideas-backlogs', 'completed-backlog.md');
+const BACKLOG_DASHBOARD_FILE = path.join(DIR, '..', 'products', 'customer-success-management', 'product-ideas-backlogs', 'backlog-dashboard.html');
 const ACTIVITY_LOG_FILE = path.join(DIR, 'claude-code-activity-log.md');
 const DOCS_VIEWER_FILE = path.join(DIR, '..', 'velyo', 'docs-viewer.html');
 const DRIP_LOG_FILE = path.join(DIR, '..', 'persona-drip', 'drip-log.md');
@@ -867,6 +867,15 @@ ${transcript}
         return json(res, { items });
       } catch (err) {
         return json(res, { error: err.message }, 500);
+      }
+    }
+
+    // ─── Favicon fallback ───
+    if (method === 'GET' && url.pathname === '/favicon.ico') {
+      const favPath = path.join(DIR, '..', 'velyo', 'resources', 'velyo-favicon.png');
+      if (fs.existsSync(favPath)) {
+        res.writeHead(200, { 'Content-Type': 'image/png' });
+        return res.end(fs.readFileSync(favPath));
       }
     }
 

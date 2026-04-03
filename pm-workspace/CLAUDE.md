@@ -52,7 +52,7 @@ PM workspace homepage, docs viewer, and shared UI components served by the actio
   - `profile.jpg` - User avatar photo (replace with your own)
 
 ### `/products` - Product-Specific Workspaces
-Template structure for product workspaces. The included example product demonstrates the full structure:
+Product workspaces. Each product has its own directory with strategy, features, backlog, and research:
 - `strategy/` - Vision, mission, roadmap, OKRs
 - `features/` - Active features being developed
 - `product-ideas-backlogs/` - Product backlog tracking with `active-backlog.md`, `completed-backlog.md`, and `backlog-dashboard.html`

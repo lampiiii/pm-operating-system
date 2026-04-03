@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Product Overview
 
-This is an **example product workspace** within the PM Operating System. It demonstrates the full product workspace structure using Customer Success Management as a domain example. Customize or replace this with your own product.
+This is the **Customer Success Management** product workspace within the PM Operating System.
 
 ## Context in Workspace
 

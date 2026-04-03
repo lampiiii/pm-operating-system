@@ -4,7 +4,7 @@ Container for product-specific workspaces.
 
 ## Current Products
 
-- `customer-success-management/` — Example product workspace demonstrating the full structure. Has its own `CLAUDE.md` with full structure, workflows, and conventions. Use this as a template for your own products.
+- `customer-success-management/` — CSM product workspace with full structure. Has its own `CLAUDE.md` with workflows and conventions.
 
 ## Conventions
 

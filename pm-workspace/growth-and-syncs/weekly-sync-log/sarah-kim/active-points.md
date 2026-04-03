@@ -4,8 +4,10 @@
 
 | # | Topic | Category | Context / Details | Added On | Status |
 |---|-------|----------|-------------------|----------|--------|
-| 1 | Customer feedback on new onboarding flow | FYI | Three enterprise customers flagged the same UX issue in the first week. Sharing for awareness. | 2026-01-22 | To Discuss |
-| 2 | Cross-team dependency on Platform team | Issue | Platform team pushed back our API changes to next sprint. Need escalation path. | 2026-01-23 | To Discuss |
+| 1 | Q2 roadmap approval status | Decision | Roadmap presentation is ready for leadership review. Want Sarah's feedback before the April 9 all-hands. Three themes: AI copilot, self-serve onboarding, health score v2. | 2026-04-01 | Ready to Discuss |
+| 2 | AI copilot competitive positioning | Work Item | ChurnZero launched AI features last week. Need to discuss our differentiation angle — proposing "context-aware" as our moat (we use full account history, not just last 30 days). | 2026-04-02 | To Discuss |
+| 3 | Customer advisory board outcomes | FYI | April CAB meeting confirmed with 8 customers. Planning to preview AI copilot concept and gather feedback on health score v2 weighting. Sharing agenda for alignment. | 2026-04-03 | To Discuss |
+| 4 | Headcount request for Q3 | Decision | Want to make the case for a PM hire focused on integrations and partnerships. Our integration backlog is growing and blocking expansion deals. | 2026-04-03 | To Discuss |
 
 <!--
 How to use:

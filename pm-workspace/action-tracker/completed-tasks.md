@@ -14,3 +14,15 @@
 | 8 | Build persona drip system with scheduled agent | 2026-01-22 | 2026-01-22 | Done |
 | 9 | Create docs viewer with file tree and search | 2026-01-25 | 2026-01-25 | Done |
 | 10 | Build composable homepage with 5 API feeds | 2026-01-28 | 2026-01-27 | Done |
+| 11 | Draft Q1 roadmap for stakeholder review | 2026-02-01 | 2026-01-31 | Done |
+| 12 | Research competitive landscape for AI features | 2026-02-10 | 2026-02-08 | Done |
+| 13 | Write user stories for dashboard redesign | 2026-02-20 | 2026-02-18 | Done |
+| 14 | Create onboarding playbook template | 2026-02-25 | 2026-02-24 | Done |
+| 15 | Run customer discovery interviews for AI copilot | 2026-03-01 | 2026-03-01 | Done |
+| 16 | Build health score v1 regression test suite | 2026-03-05 | 2026-03-04 | Done |
+| 17 | Present Q1 retrospective to product leadership | 2026-03-10 | 2026-03-10 | Done |
+| 18 | Ship stale data indicator on dashboards | 2026-03-15 | 2026-03-14 | Done |
+| 19 | Define AI copilot MVP scope with engineering | 2026-03-18 | 2026-03-17 | Done |
+| 20 | Create persona drip rotation for Q2 themes | 2026-03-22 | 2026-03-22 | Done |
+| 21 | Write competitive brief on Gainsight Copilot launch | 2026-03-25 | 2026-03-24 | Done |
+| 22 | Finalize Q2 OKRs with cross-functional leads | 2026-03-28 | 2026-03-28 | Done |

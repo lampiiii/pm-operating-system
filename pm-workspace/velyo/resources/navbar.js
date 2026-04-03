@@ -342,6 +342,15 @@
   `;
   document.head.appendChild(style);
 
+  /* ── Favicon ── */
+  if (!document.querySelector('link[rel="icon"]')) {
+    const fav = document.createElement('link');
+    fav.rel = 'icon';
+    fav.type = 'image/png';
+    fav.href = '/resources/velyo-favicon.png';
+    document.head.appendChild(fav);
+  }
+
   /* ── Build HTML ── */
   const nav = document.createElement('nav');
   nav.className = 'velyo-nav';
@@ -365,8 +374,8 @@
   nav.innerHTML = `
     <div class="velyo-nav-inner">
       <a href="/home" class="velyo-nav-logo">
-        <!-- Replace with your own logo: <img src="/resources/logo.png" alt="PM OS"> -->
-        <span class="velyo-nav-logo-text">PM OS</span>
+        <img src="/resources/velyo-logo.png" alt="Velyo">
+        <span class="velyo-nav-logo-text">Velyo</span>
       </a>
       <div class="velyo-nav-links">${linksHtml}</div>
       <div class="velyo-nav-right">
