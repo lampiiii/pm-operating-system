@@ -1005,10 +1005,22 @@ ${JSON.stringify(entries.map(e => e.what))}`;
 
     // ─── GET full-text search across .md files ───
     if (method === 'GET' && url.pathname === '/api/files/search') {
-      const query = (url.searchParams.get('q') || '').toLowerCase().trim();
-      if (!query) return json(res, { results: [] });
+      const rawQuery = (url.searchParams.get('q') || '').trim();
+      if (!rawQuery) return json(res, { results: [] });
+      const queryLower = rawQuery.toLowerCase();
+      const queryTerms = queryLower.split(/\s+/).filter(Boolean);
       try {
         const results = [];
+        function extractSnippet(content, idx, termLen) {
+          const start = Math.max(0, idx - 60);
+          const end = Math.min(content.length, idx + termLen + 60);
+          return (start > 0 ? '...' : '') + content.slice(start, end).replace(/\n/g, ' ') + (end < content.length ? '...' : '');
+        }
+        function countOccurrences(haystack, needle) {
+          let count = 0, pos = 0;
+          while ((pos = haystack.indexOf(needle, pos)) !== -1) { count++; pos += needle.length; }
+          return count;
+        }
         function searchDir(dir) {
           const entries = fs.readdirSync(dir, { withFileTypes: true });
           for (const entry of entries) {
@@ -1018,20 +1030,71 @@ ${JSON.stringify(entries.map(e => e.what))}`;
             else if (entry.name.endsWith('.md') && !entry.name.startsWith('CLAUDE') && entry.name !== 'MEMORY.md') {
               const content = fs.readFileSync(full, 'utf8');
               const lower = content.toLowerCase();
-              const idx = lower.indexOf(query);
-              if (idx !== -1) {
-                // Extract snippet around match
-                const start = Math.max(0, idx - 60);
-                const end = Math.min(content.length, idx + query.length + 60);
-                const snippet = (start > 0 ? '...' : '') + content.slice(start, end).replace(/\n/g, ' ') + (end < content.length ? '...' : '');
-                results.push({ path: path.relative(WORKSPACE_ROOT, full), name: entry.name, snippet });
-                if (results.length >= 50) return;
+              const nameLower = entry.name.toLowerCase();
+              const relPath = path.relative(WORKSPACE_ROOT, full);
+
+              // Check if ALL query terms appear somewhere (content or filename)
+              const allTermsMatch = queryTerms.every(t => lower.includes(t) || nameLower.includes(t));
+              if (!allTermsMatch) continue;
+
+              // Count total occurrences across all terms for relevance scoring
+              let totalHits = 0;
+              let nameHits = 0;
+              for (const t of queryTerms) {
+                totalHits += countOccurrences(lower, t);
+                if (nameLower.includes(t)) nameHits++;
               }
+
+              // Collect up to 3 distinct snippet locations for the full query or individual terms
+              const snippets = [];
+              const seenPositions = new Set();
+              // First pass: try full query match
+              let pos = 0;
+              while (snippets.length < 3 && (pos = lower.indexOf(queryLower, pos)) !== -1) {
+                snippets.push(extractSnippet(content, pos, rawQuery.length));
+                seenPositions.add(pos);
+                pos += queryLower.length;
+              }
+              // Second pass: individual term matches if we need more snippets
+              if (snippets.length < 3 && queryTerms.length > 1) {
+                for (const t of queryTerms) {
+                  let tpos = 0;
+                  while (snippets.length < 3 && (tpos = lower.indexOf(t, tpos)) !== -1) {
+                    // Skip if too close to an existing snippet position
+                    let tooClose = false;
+                    for (const sp of seenPositions) { if (Math.abs(tpos - sp) < 80) { tooClose = true; break; } }
+                    if (!tooClose) {
+                      snippets.push(extractSnippet(content, tpos, t.length));
+                      seenPositions.add(tpos);
+                    }
+                    tpos += t.length;
+                  }
+                }
+              }
+              // Fallback: at least one snippet from first term
+              if (snippets.length === 0) {
+                const idx = lower.indexOf(queryTerms[0]);
+                if (idx !== -1) snippets.push(extractSnippet(content, idx, queryTerms[0].length));
+              }
+
+              // Relevance score: filename matches weighted heavily, then total content hits
+              const score = (nameHits * 100) + totalHits;
+
+              results.push({
+                path: relPath,
+                name: entry.name,
+                snippet: snippets[0] || '',
+                snippets,
+                matchCount: totalHits,
+                score
+              });
             }
           }
         }
         searchDir(WORKSPACE_ROOT);
-        return json(res, { results });
+        // Sort by relevance score descending
+        results.sort((a, b) => b.score - a.score);
+        return json(res, { results: results.slice(0, 50) });
       } catch (err) {
         return json(res, { error: err.message }, 500);
       }

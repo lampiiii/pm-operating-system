@@ -532,6 +532,7 @@
       transition: color var(--transition);
     }
     .topic-text:hover { color: var(--blue); }
+    mark.search-hl { background: rgba(59,130,246,0.22); color: inherit; border-radius: 2px; padding: 0 1px; }
     .context-cell { min-width: 180px; max-width: 320px; }
     .context-text {
       font-size: 13px;
@@ -1446,6 +1447,12 @@
       d.textContent = s || '';
       return d.innerHTML;
     }
+    function highlightMatch(text, query) {
+      if (!query) return escHtml(text);
+      const escaped = escHtml(text);
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return escaped.replace(re, '<mark class="search-hl">$1</mark>');
+    }
 
     function categoryBadgeClass(cat) {
       const map = {
@@ -1735,7 +1742,7 @@
         <tr class="${state.selected.has(p.id) ? 'selected' : ''}" data-id="${p.id}">
           <td class="cb-cell"><input type="checkbox" ${state.selected.has(p.id) ? 'checked' : ''} onchange="toggleSelect(${p.id})"></td>
           <td class="point-num">${i + 1}</td>
-          <td class="topic-cell" ondblclick="event.stopPropagation(); startEditTopic(${p.id}, this)"><span class="topic-text" onclick="showDetail(${p.id}, 'active')">${escHtml(p.topic)}</span></td>
+          <td class="topic-cell" ondblclick="event.stopPropagation(); startEditTopic(${p.id}, this)"><span class="topic-text" onclick="showDetail(${p.id}, 'active')">${highlightMatch(p.topic, state.search)}</span></td>
           <td ondblclick="startEditCategory(${p.id}, this)"><span class="badge ${categoryBadgeClass(p.category)}">${escHtml(p.category)}</span></td>
           <td class="context-cell" ondblclick="showDetail(${p.id}, 'active')"><span class="context-text" title="${escHtml(stripHtml(p.context))}">${escHtml(stripHtml(p.context)) || '<span style="color:var(--text-faint)">--</span>'}</span></td>
           <td class="date-cell" ondblclick="startEditDate(${p.id}, this)">${escHtml(p.addedOn)}</td>
@@ -1765,7 +1772,7 @@
       tbody.innerHTML = filtered.map((p, i) => `
         <tr data-id="${p.id}">
           <td class="point-num">${i + 1}</td>
-          <td class="topic-cell"><span class="topic-text" onclick="showDetail(${p.id}, 'discussed')">${escHtml(p.topic)}</span></td>
+          <td class="topic-cell"><span class="topic-text" onclick="showDetail(${p.id}, 'discussed')">${highlightMatch(p.topic, state.search)}</span></td>
           <td><span class="badge ${categoryBadgeClass(p.category)}">${escHtml(p.category)}</span></td>
           <td class="context-cell"><span class="context-text" title="${escHtml(stripHtml(p.context))}">${escHtml(stripHtml(p.context)) || '<span style="color:var(--text-faint)">--</span>'}</span></td>
           <td class="date-cell">${escHtml(p.discussedOn)}</td>
@@ -2110,10 +2117,12 @@
         });
       });
 
-      // Search
+      // Search (debounced)
+      let _searchDebounce = null;
       document.getElementById('search-input').addEventListener('input', (e) => {
         state.search = e.target.value;
-        render();
+        clearTimeout(_searchDebounce);
+        _searchDebounce = setTimeout(() => render(), 180);
       });
 
       // Select all

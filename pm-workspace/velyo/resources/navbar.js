@@ -245,6 +245,50 @@
       font-size: 14px;
       text-align: center;
     }
+    .velyo-search-section-label {
+      padding: 8px 14px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted, #9090a5);
+    }
+    .velyo-search-file-result {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .velyo-search-file-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .velyo-search-file-snippet {
+      font-size: 11px;
+      color: var(--text-muted, #9090a5);
+      line-height: 1.4;
+      padding-left: 24px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 100%;
+    }
+    .velyo-search-file-snippet mark {
+      background: rgba(59,130,246,0.2);
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+    .velyo-search-match-badge {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--blue, #6c5ce7);
+      background: rgba(59,130,246,0.1);
+      padding: 1px 6px;
+      border-radius: 8px;
+    }
 
     /* Theme toggle button */
     .velyo-nav-theme-btn {
@@ -443,15 +487,51 @@
   const searchResults = document.getElementById('velyo-search-results');
   let highlightedIdx = -1;
 
+  const RECENT_KEY = 'velyo-recent-searches';
+  function getRecentSearches() {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY)) || []; } catch { return []; }
+  }
+  function saveRecentSearch(q) {
+    if (!q || !q.trim()) return;
+    const trimmed = q.trim();
+    let recent = getRecentSearches().filter(s => s !== trimmed);
+    recent.unshift(trimmed);
+    if (recent.length > 5) recent = recent.slice(0, 5);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent));
+  }
+  function showRecentSearches() {
+    const recent = getRecentSearches();
+    if (!recent.length) return;
+    const clockSvg = '<svg class="velyo-search-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+    searchResults.innerHTML =
+      '<div class="velyo-search-section-label">Recent</div>' +
+      recent.map((q, i) =>
+        `<a href="#" class="velyo-search-result velyo-recent-item" data-idx="${i}" data-query="${q.replace(/"/g, '&quot;')}">${clockSvg} ${q}</a>`
+      ).join('');
+    searchResults.querySelectorAll('.velyo-recent-item').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        searchInput.value = el.dataset.query;
+        searchInput.dispatchEvent(new Event('input'));
+      });
+    });
+    highlightedIdx = -1;
+    searchResults.classList.add('visible');
+  }
+
   function openSearch() {
     searchOverlay.classList.add('visible');
-    setTimeout(() => searchInput.focus(), 50);
+    setTimeout(() => {
+      searchInput.focus();
+      if (!searchInput.value.trim()) showRecentSearches();
+    }, 50);
   }
   function closeSearch() {
     searchOverlay.classList.remove('visible');
     searchInput.value = '';
     searchResults.classList.remove('visible');
     highlightedIdx = -1;
+    lastFileResults = [];
   }
 
   searchTrigger.addEventListener('click', openSearch);
@@ -467,57 +547,125 @@
     { label: 'Home', href: '/home', keywords: 'home landing workspace' },
   ];
 
-  function renderSearchResults(query) {
+  let searchDebounce = null;
+  let lastFileResults = [];
+
+  function renderSearchResults(query, fileResults) {
     if (!query.trim()) {
       searchResults.classList.remove('visible');
       return;
     }
     const q = query.toLowerCase();
-    const matches = searchablePages.filter(p =>
-      p.label.toLowerCase().includes(q) || p.keywords.includes(q)
+    const qTerms = q.split(/\s+/).filter(Boolean);
+
+    // 1. Page navigation matches
+    const navMatches = searchablePages.filter(p =>
+      qTerms.every(t => p.label.toLowerCase().includes(t) || p.keywords.includes(t))
     );
 
+    // 2. Current page DOM element matches
     const pageMatches = [];
     document.querySelectorAll('.task-name, .point-topic, .backlog-name, h3, h4').forEach(el => {
       const text = el.textContent.trim();
-      if (text.toLowerCase().includes(q) && text.length < 100) {
+      if (qTerms.every(t => text.toLowerCase().includes(t)) && text.length < 100) {
         if (!pageMatches.find(m => m.label === text)) {
           pageMatches.push({ label: text, href: '#', keywords: '', isPageItem: true });
         }
       }
     });
 
-    const allMatches = [...matches, ...pageMatches.slice(0, 5)];
+    // 3. Workspace file matches (from API)
+    const fileMatches = (fileResults || lastFileResults).slice(0, 5);
 
-    if (allMatches.length === 0) {
+    // Build sections
+    let html = '';
+
+    if (navMatches.length) {
+      html += '<div class="velyo-search-section-label">Pages</div>';
+      html += navMatches.map((m, i) =>
+        `<a href="${m.href}" class="velyo-search-result" data-idx="${i}"><span class="velyo-search-result-icon">${pageSvg}</span> ${m.label}</a>`
+      ).join('');
+    }
+
+    if (pageMatches.length) {
+      html += '<div class="velyo-search-section-label">On this page</div>';
+      html += pageMatches.slice(0, 5).map((m, i) => {
+        const idx = navMatches.length + i;
+        return `<a href="#" class="velyo-search-result" data-idx="${idx}"><svg class="velyo-search-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg> ${m.label}</a>`;
+      }).join('');
+    }
+
+    if (fileMatches.length) {
+      html += '<div class="velyo-search-section-label">Workspace files</div>';
+      const escRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const rePattern = qTerms.map(escRe).join('|');
+      const re = new RegExp(`(${rePattern})`, 'gi');
+      html += fileMatches.map((r, i) => {
+        const idx = navMatches.length + Math.min(pageMatches.length, 5) + i;
+        const snippet = (r.snippet || '').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(re, '<mark>$1</mark>');
+        const countBadge = r.matchCount ? `<span class="velyo-search-match-badge">${r.matchCount}</span>` : '';
+        return `<a href="/docs#${r.path}" class="velyo-search-result velyo-search-file-result" data-idx="${idx}" data-file-path="${r.path}">
+          <div class="velyo-search-file-name"><svg class="velyo-search-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>${r.name} ${countBadge}</div>
+          ${snippet ? `<div class="velyo-search-file-snippet">${snippet}</div>` : ''}
+        </a>`;
+      }).join('');
+    }
+
+    if (!html) {
       searchResults.innerHTML = '<div class="velyo-search-no-results">No results</div>';
     } else {
-      searchResults.innerHTML = allMatches.map((m, i) => {
-        const icon = m.isPageItem
-          ? '<svg class="velyo-search-result-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>'
-          : `<span class="velyo-search-result-icon">${pageSvg}</span>`;
-        return `<a href="${m.href}" class="velyo-search-result${i === highlightedIdx ? ' highlighted' : ''}" data-idx="${i}">${icon} ${m.label}</a>`;
-      }).join('');
+      searchResults.innerHTML = html;
     }
     highlightedIdx = -1;
     searchResults.classList.add('visible');
   }
 
-  searchInput.addEventListener('input', (e) => renderSearchResults(e.target.value));
+  searchInput.addEventListener('input', (e) => {
+    const query = e.target.value;
+    if (!query.trim()) {
+      showRecentSearches();
+      clearTimeout(searchDebounce);
+      lastFileResults = [];
+      return;
+    }
+    // Immediately render with local results
+    renderSearchResults(query, lastFileResults);
+    // Debounce workspace file search for queries >= 2 chars
+    clearTimeout(searchDebounce);
+    if (query.trim().length >= 2) {
+      searchDebounce = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/files/search?q=${encodeURIComponent(query.trim())}`);
+          const data = await res.json();
+          lastFileResults = data.results || [];
+          // Re-render with file results if input hasn't changed
+          if (searchInput.value === query) renderSearchResults(query, lastFileResults);
+        } catch { /* ignore fetch errors */ }
+      }, 200);
+    } else {
+      lastFileResults = [];
+    }
+  });
   searchInput.addEventListener('keydown', (e) => {
     const items = searchResults.querySelectorAll('.velyo-search-result');
+    if (!items.length) return;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      highlightedIdx = Math.min(highlightedIdx + 1, items.length - 1);
-      items.forEach((it, i) => it.classList.toggle('highlighted', i === highlightedIdx));
+      if (highlightedIdx >= 0) items[highlightedIdx].classList.remove('highlighted');
+      highlightedIdx = highlightedIdx >= items.length - 1 ? 0 : highlightedIdx + 1;
+      items[highlightedIdx].classList.add('highlighted');
+      items[highlightedIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      highlightedIdx = Math.max(highlightedIdx - 1, 0);
-      items.forEach((it, i) => it.classList.toggle('highlighted', i === highlightedIdx));
+      if (highlightedIdx >= 0) items[highlightedIdx].classList.remove('highlighted');
+      highlightedIdx = highlightedIdx <= 0 ? items.length - 1 : highlightedIdx - 1;
+      items[highlightedIdx].classList.add('highlighted');
+      items[highlightedIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (e.key === 'Enter') {
       e.preventDefault();
       const active = items[highlightedIdx] || items[0];
       if (active && active.href && active.href !== '#') {
+        saveRecentSearch(searchInput.value);
         window.location.href = active.href;
       } else if (active) {
         const text = active.textContent.trim();

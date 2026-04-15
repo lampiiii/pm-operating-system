@@ -19,6 +19,9 @@ dist/
 venv/
 __pycache__/
 
+# Video
+pm-workspace/velyo/video-script.md
+
 # Editor
 *.swp
 *.swo

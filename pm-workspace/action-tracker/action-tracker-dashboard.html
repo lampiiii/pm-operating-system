@@ -561,6 +561,7 @@
       transition: color var(--transition);
     }
     .task-name:hover { color: var(--blue); }
+    mark.search-hl { background: rgba(59,130,246,0.22); color: inherit; border-radius: 2px; padding: 0 1px; }
     .task-done .task-name { text-decoration: line-through; color: var(--text-muted); }
 
     /* Due date input */
@@ -1813,6 +1814,12 @@
       d.textContent = s;
       return d.innerHTML;
     }
+    function highlightMatch(text, query) {
+      if (!query) return escHtml(text);
+      const escaped = escHtml(text);
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return escaped.replace(re, '<mark class="search-hl">$1</mark>');
+    }
 
     function formatTaskId(id) { return 'ACT' + String(id).padStart(6, '0'); }
 
@@ -1833,34 +1840,38 @@
       return p === 'L' ? 'Leverage' : p === 'N' ? 'Neutral' : 'Overhead';
     }
 
-    // FILTERING, SORTING, SEARCHING
+    // FILTERING, SORTING, SEARCHING — single-pass filter
     function getFiltered(includeDone) {
-      let list = state.tasks;
-      if (!includeDone) list = list.filter(t => t.status !== 'Done');
-      // Visibility filter
-      if (state.visibilityFilter === 'active') list = list.filter(t => (t.visibility || 'Active') !== 'Someday');
-      else if (state.visibilityFilter === 'someday') list = list.filter(t => (t.visibility || 'Active') === 'Someday');
-      if (state.filter !== 'all') list = list.filter(t => t.priority === state.filter);
-      // Feature filter
-      if (state.featureFilter) {
-        if (state.featureFilter === '__none__') list = list.filter(t => !t.feature);
-        else list = list.filter(t => t.feature === state.featureFilter);
-      }
-      if (state.search) {
-        const q = state.search.toLowerCase();
-        list = list.filter(t =>
-          t.name.toLowerCase().includes(q) ||
-          t.notes.toLowerCase().includes(q) ||
-          t.status.toLowerCase().includes(q) ||
-          (t.feature || '').toLowerCase().includes(q)
-        );
-      }
-      // Column-level filters
+      const vf = state.visibilityFilter;
+      const pf = state.filter;
+      const ff = state.featureFilter;
+      const sq = state.search ? state.search.toLowerCase() : '';
       const cf = state.colFilters;
-      if (cf.task) { const q = cf.task.toLowerCase(); list = list.filter(t => t.name.toLowerCase().includes(q)); }
-      if (cf.priority) list = list.filter(t => t.priority === cf.priority);
-      if (cf.status) list = list.filter(t => t.status === cf.status);
-      if (cf.notes) { const q = cf.notes.toLowerCase(); list = list.filter(t => (t.notes || '').toLowerCase().includes(q)); }
+      const cfTask = cf.task ? cf.task.toLowerCase() : '';
+      const cfNotes = cf.notes ? cf.notes.toLowerCase() : '';
+
+      const list = state.tasks.filter(t => {
+        if (!includeDone && t.status === 'Done') return false;
+        const vis = t.visibility || 'Active';
+        if (vf === 'active' && vis === 'Someday') return false;
+        if (vf === 'someday' && vis !== 'Someday') return false;
+        if (pf !== 'all' && t.priority !== pf) return false;
+        if (ff) {
+          if (ff === '__none__' ? t.feature : t.feature !== ff) return false;
+        }
+        if (sq) {
+          const nameLow = t.name.toLowerCase();
+          const notesLow = t.notes.toLowerCase();
+          const statusLow = t.status.toLowerCase();
+          const featLow = (t.feature || '').toLowerCase();
+          if (!nameLow.includes(sq) && !notesLow.includes(sq) && !statusLow.includes(sq) && !featLow.includes(sq)) return false;
+        }
+        if (cfTask && !t.name.toLowerCase().includes(cfTask)) return false;
+        if (cf.priority && t.priority !== cf.priority) return false;
+        if (cf.status && t.status !== cf.status) return false;
+        if (cfNotes && !(t.notes || '').toLowerCase().includes(cfNotes)) return false;
+        return true;
+      });
       return sortTasks(list);
     }
 
@@ -2030,7 +2041,7 @@
         : '';
 
       const notesPreview = t.notes
-        ? `<span class="notes-text">${t.notes}</span>`
+        ? `<span class="notes-text">${highlightMatch(t.notes, state.search)}</span>`
         : `<span class="notes-placeholder">Add notes...</span>`;
       const notesContent = `<div class="notes-display" ondblclick="startEditNotes(${t.id})">
             ${notesPreview}
@@ -2040,7 +2051,7 @@
       return `<tr class="${isDone} ${isSelected}" style="${isSomeday ? 'opacity:0.65;' : ''}">
         <td class="cb-cell"><input type="checkbox" ${checked} onchange="toggleSelect(${t.id}, this.checked)"></td>
         <td class="task-name-cell">
-          <span class="task-name" onclick="openDetail(${t.id})" ondblclick="event.stopPropagation(); startEditName(${t.id}, this.parentElement)">${escHtml(t.name)}</span>
+          <span class="task-name" onclick="openDetail(${t.id})" ondblclick="event.stopPropagation(); startEditName(${t.id}, this.parentElement)">${highlightMatch(t.name, state.search)}</span>
           ${featureTag ? '<br>' + featureTag : ''}
         </td>
         <td><input type="date" class="due-date-input ${dueDateClass}" value="${t.due}" onchange="updateDue(${t.id}, this.value)"></td>
@@ -2584,9 +2595,11 @@
       });
     });
 
+    let _searchDebounce = null;
     document.getElementById('search-input').addEventListener('input', e => {
       state.search = e.target.value;
-      render();
+      clearTimeout(_searchDebounce);
+      _searchDebounce = setTimeout(() => render(), 180);
     });
 
     // Visibility toggle
@@ -2634,10 +2647,12 @@
     });
 
     // Column filter listeners
+    let _colFilterDebounce = null;
     ['task', 'notes'].forEach(key => {
       document.getElementById('filter-' + key).addEventListener('input', function() {
         state.colFilters[key] = this.value;
-        render();
+        clearTimeout(_colFilterDebounce);
+        _colFilterDebounce = setTimeout(() => render(), 180);
       });
     });
     ['priority', 'status'].forEach(key => {

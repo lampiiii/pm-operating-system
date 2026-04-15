@@ -603,6 +603,7 @@
       transition: color var(--transition);
     }
     .task-name:hover { color: var(--blue); }
+    mark.search-hl { background: rgba(59,130,246,0.22); color: inherit; border-radius: 2px; padding: 0 1px; }
     .task-done .task-name { text-decoration: line-through; color: var(--text-muted); }
 
     /* Badges */
@@ -1734,6 +1735,12 @@
       d.textContent = s;
       return d.innerHTML;
     }
+    function highlightMatch(text, query) {
+      if (!query) return escHtml(text);
+      const escaped = escHtml(text);
+      const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+      return escaped.replace(re, '<mark class="search-hl">$1</mark>');
+    }
     function stripHtml(s) {
       if (!s) return '';
       const d = document.createElement('div');
@@ -1878,7 +1885,7 @@
         return `<tr class="${isDone} ${isSelected}">
           <td class="cb-cell"><input type="checkbox" ${checked} onchange="toggleSelect(${t.id}, this.checked)"></td>
           <td class="task-num">${t.id}</td>
-          <td class="task-name-cell"><span class="task-name" onclick="openDetail(${t.id})" ondblclick="event.stopPropagation(); startEditName(${t.id}, this.parentElement)">${escHtml(t.shortDesc)}</span></td>
+          <td class="task-name-cell"><span class="task-name" onclick="openDetail(${t.id})" ondblclick="event.stopPropagation(); startEditName(${t.id}, this.parentElement)">${highlightMatch(t.shortDesc, state.search)}</span></td>
           <td class="desc-cell">${descContent}</td>
           <td ondblclick="startEditPriority(${t.id}, this)"><span class="badge badge-${t.priority}">${priorityLabel(t.priority)}</span></td>
           <td><select class="status-select ${statusSelectClass(t.status)}" onchange="updateStatus(${t.id}, this.value)">${statusOpts}</select></td>
@@ -1910,7 +1917,7 @@
       tbody.innerHTML = filtered.map(t => {
         return `<tr>
           <td class="task-num">${t.id}</td>
-          <td class="task-name-cell"><span class="task-name" onclick="openCompletedDetail(${t.id})">${escHtml(t.shortDesc)}</span></td>
+          <td class="task-name-cell"><span class="task-name" onclick="openCompletedDetail(${t.id})">${highlightMatch(t.shortDesc, state.search)}</span></td>
           <td class="desc-cell"><span class="desc-text">${escHtml(stripHtml(t.description))}</span></td>
           <td>${t.completed || ''}</td>
           <td><span class="badge" style="background:rgba(24,128,56,0.12);color:var(--success);">Done</span></td>
@@ -1937,7 +1944,7 @@
           ? `<div class="kanban-empty">No ideas</div>`
           : items.map(t => {
               return `<div class="kanban-card priority-${t.priority}" data-task-id="${t.id}" onclick="openDetail(${t.id})">
-                <div class="kanban-card-title">${escHtml(t.shortDesc)}</div>
+                <div class="kanban-card-title">${highlightMatch(t.shortDesc, state.search)}</div>
                 <div class="kanban-card-meta">
                   <span class="kanban-card-num">#${t.id}</span>
                   <span class="badge badge-${t.priority}" style="font-size:10px;padding:2px 8px;">${t.priority}</span>
@@ -2473,9 +2480,11 @@
       });
     });
 
+    let _searchDebounce = null;
     document.getElementById('search-input').addEventListener('input', e => {
       state.search = e.target.value;
-      render();
+      clearTimeout(_searchDebounce);
+      _searchDebounce = setTimeout(() => render(), 180);
     });
 
     document.querySelectorAll('.task-table thead th[data-sort]').forEach(th => {

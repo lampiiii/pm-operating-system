@@ -32,6 +32,19 @@
 | 2026-03-24 | Built competitive brief comparing AI copilot approaches across 4 competitors | Agent (competitive-strategic-lens), WebSearch | Pattern — combine agent analysis with live web search for freshest data |
 | 2026-03-31 | Created Q2 OKR draft by cross-referencing roadmap, backlog, and customer feedback themes | Read (multiple files), Write | Skill — quarterly OKR generation from workspace state |
 | 2026-04-02 | Populated workspace with tasks, backlog items, persona drips, activity log entries, and sync points | Edit (multiple files), Write (drip files) | None — one-time setup |
+| 2026-04-15 | Created detailed video script for PM OS workspace showcase — 8 scenes, voiceover lines, screen actions, timing cues, production notes | Write (video-script.md), Agent (Explore) | Skill — "demo script generator" that scans workspace pages and produces a structured walkthrough |
+| 2026-04-15 | Overhauled server-side search engine (`/api/files/search`) — multi-word AND matching, all-occurrences counting, up to 3 snippets per file, relevance scoring with filename boost | Edit (server.js) | Pattern — search quality improvements compound across all consumers (Explorer, Cmd+K) |
+| 2026-04-15 | Upgraded Cmd+K global search to query full workspace via API — 3-section results (Pages / On this page / Workspace files), file snippets with highlighting, debounced API calls | Edit (navbar.js) | Pattern — global search as cross-page navigation layer |
+| 2026-04-15 | Upgraded Explorer search — results count header, match count badges per file, multi-snippet display, multi-term highlighting | Edit (docs-viewer.html) | None — incremental search UX improvement |
+| 2026-04-15 | Audited all 6 search implementations across workspace, identified 24 improvements across performance and UX, prioritized by impact | Agent (Explore), Direct output | Pattern — systematic audit before implementation prevents scattered fixes |
+| 2026-04-15 | Added 180ms debounce to search inputs across Action Tracker, Sync dashboard, and Backlog dashboard — prevented full re-render on every keystroke | Edit (3 HTML files) | Pattern — debounce is mandatory for any search-triggered render |
+| 2026-04-15 | Merged 10 separate `.filter()` calls into single-pass filter in Action Tracker `getFiltered()` — reduced iterations from 10N to N | Edit (action-tracker-dashboard.html) | None — one-time performance optimization |
+| 2026-04-15 | Added search term highlighting (`highlightMatch()`) across Action Tracker (names + notes), Sync dashboard (topics), and Backlog dashboard (items + kanban cards) | Edit (4 HTML files) | Pattern — shared `highlightMatch()` pattern reused identically across dashboards |
+| 2026-04-15 | Built Cmd+F find-in-page for Explorer — find bar with prev/next buttons, "3 of 17" match counter, Enter/Shift+Enter cycling, yellow + orange active highlight | Edit (docs-viewer.html) | None — one-time feature |
+| 2026-04-15 | Added loading spinner to Explorer search and keyboard navigation (ArrowUp/Down/Enter with wrap-around) to both Explorer and Cmd+K search results | Edit (docs-viewer.html, navbar.js) | None — one-time UX improvement |
+| 2026-04-15 | Built content highlighting in Explorer — clicking a search result highlights all matching terms in rendered markdown and auto-scrolls to first match | Edit (docs-viewer.html) | None — one-time feature |
+| 2026-04-15 | Added recent searches to Cmd+K — last 5 queries stored in localStorage, shown when search opens with empty input, clickable to re-run | Edit (navbar.js) | None — one-time feature |
+| 2026-04-15 | Fixed Strategic Playbook page — made quote source a clickable link to `/playbook`, added `scrollRestoration: manual` + `scrollTo(0,0)`, fixed navbar overlap with `padding-top: 56px` on body and corrected sticky header `top` from 64px to 56px | Edit (pm-workspace-home.html, strategic-playbook-dashboard.html) | None — one-time layout fix |
 
 <!--
 How to use this log:

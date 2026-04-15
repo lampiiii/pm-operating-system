@@ -916,7 +916,9 @@
       text-transform: uppercase;
       letter-spacing: 1.5px;
       font-weight: 500;
+      transition: color 0.2s;
     }
+    .quote-source:hover { color: rgba(232,234,237,0.5); }
 
     /* ─── Footer — Google I/O style ─── */
     footer {
@@ -1065,7 +1067,7 @@
   <!-- #6: Strategic Quote -->
   <section class="quote-section reveal" id="quote-section">
     <div class="quote-text" id="quote-text"></div>
-    <div class="quote-source">Strategic Playbook</div>
+    <a href="/playbook" class="quote-source" style="text-decoration:none;cursor:pointer;">Strategic Playbook</a>
   </section>
 
   <!-- ─── Footer ─── -->

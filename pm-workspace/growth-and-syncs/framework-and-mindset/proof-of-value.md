@@ -321,6 +321,8 @@ Every component maps to a skill the AI PM Strategic Playbook identifies as irrep
 | Persona Drip system | **Design Thinking** + **Domain Expertise** | Daily empathy immersion that encodes CSM operational reality and surfaces invisible friction as product signal |
 | Homepage composable dashboard | **Platform Thinking** | 5 independent data feeds (tasks, activity, deadlines, sync, drips) unified into one API-driven daily cockpit |
 | Action Tracker Visibility system | **Agent Governance** | Active/Someday separation — governance over task attention, not just priority. Default-hidden Someday prevents cognitive overload while preserving the backlog. |
+| Workspace-wide search system | **Platform Thinking** | Multi-layered search architecture: server API (multi-word, relevance-scored, multi-snippet) → Cmd+K global overlay (3-section results: Pages / Page items / Workspace files) → Explorer full-text + Cmd+F find-in-page → per-dashboard inline filtering with highlighting. One API enhancement propagates to all consumers automatically. |
+| Search UX standardization | **Reusable Architecture** | Identical `highlightMatch()` pattern deployed across 4 dashboards. Consistent debounce (180ms), keyboard navigation (wrap-around, scroll-into-view), and loading states across all search surfaces. Designed once, replicated without variation — same pattern as a design system component. |
 
 ---
 
