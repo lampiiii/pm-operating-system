@@ -11,3 +11,4 @@
 | 5 | Custom health score weights | Allow admins to adjust weight of each health score input (usage, support, NPS, engagement) per customer segment | 2026-02-28 | Done |
 | 6 | Onboarding progress tracker | Visual checklist of onboarding milestones per account with automated completion based on product usage events | 2026-03-20 | Done |
 | 7 | Renewal forecast dashboard | Portfolio-level view of upcoming renewals with predicted outcomes based on health score trajectory and CSM activity | 2026-03-28 | Done |
+| 8 | AI-generated renewal save plans | Auto-generate a save playbook when an account drops to red — pulls risk signals, usage data, and past touchpoints into a structured plan | 2026-04-30 | Done |

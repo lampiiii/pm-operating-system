@@ -11,9 +11,13 @@
 | 5 | Competitive brief on Gainsight Copilot | FYI | Gainsight launched AI copilot features in Feb. Shared competitive analysis. | 2026-03-03 | Sarah shared with CPO. Decision: accelerate our AI copilot timeline from Q3 to Q2. Budget approved for LLM API costs. |
 | 6 | Q1 retrospective themes | Work Item | Three themes: deploy communication gaps, CS-engineering handoff, customer segmentation accuracy | 2026-03-17 | All three accepted as Q2 process improvements. Sarah assigned DRI for each. |
 | 7 | Q2 planning priorities | Decision | Debating between depth (fewer features, more polished) vs. breadth (more features, MVP quality) | 2026-03-24 | Going with depth. Three features max in Q2. Quality bar: "demo-ready for CAB by end of quarter." |
+| 8 | AI copilot competitive positioning | Work Item | ChurnZero launched AI features last week. Need to discuss our differentiation angle — proposing "context-aware" as our moat (we use full account history, not just last 30 days). | 2026-04-18 | All items approved |
 
 <!--
 Archive of all points discussed in weekly syncs.
 - Points move here from active-points.md once marked "Discussed"
-- Never delete entries, only append
+- "Discussed On" = date of the weekly sync when it was covered
+- "Outcome / Next Steps" = what was decided, any follow-up actions
+- This serves as a running log — never delete entries, only append
+- Useful for tracking patterns, revisiting decisions, and preparing for reviews
 -->
