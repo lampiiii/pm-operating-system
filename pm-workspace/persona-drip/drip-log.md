@@ -19,3 +19,6 @@ Daily persona immersion scenarios for building B2B empathy.
 | 11 | 2026-03-24 | Negotiating internally for engineering resources to fix a customer blocker | Cross-Functional Friction | Commercial |
 | 12 | 2026-03-31 | End-of-quarter — the renewal marathon and the celebration that follows | High-Stakes Moments | Enterprise |
 | 13 | 2026-04-02 | The handoff: transitioning an account from onboarding to long-term CSM | Recurring Rituals | Mid-Market |
+| 14 | 2026-04-09 | The Tuesday-morning pipeline — reading 40 accounts before standup | Daily Operations | Commercial |
+| 15 | 2026-04-14 | Building the SMB scale plan — the memo that decides whether a segment survives | Strategic Work | SMB |
+| 16 | 2026-04-17 | The Friday-afternoon win — the account that came back from red | Emotional Landscape | Enterprise |
